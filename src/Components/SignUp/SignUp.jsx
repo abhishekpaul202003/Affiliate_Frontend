@@ -3,6 +3,8 @@ import { useFormik } from 'formik';
 import UserSignUPSchema from './SignupValidation';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
+import {APIURL} from '../../GlobalURL'
+import {showSuccessToast,showErrorToast} from '../ToastifyNotification'
 
 
 export default function SignUp() {
@@ -15,16 +17,17 @@ export default function SignUp() {
         onSubmit: async (values) => {
 
             try {
-                const APIURL = 'http://localhost:8080/CreateUser'
+                const APIURLDATA = `${APIURL}CreateUser`
 
-                const response = await axios.post(APIURL, values)
+                const response = await axios.post(APIURLDATA, values)
 
                 if (response.status == 200 || response.status == 201) {
+                    showSuccessToast('Successfully SignUp')
                     Navigater('/')
                 }
             }
             catch (e) {
-                alert(e.response?.data?.msg || 'Server Site Error')
+                showErrorToast(e.response?.data?.msg || 'Server Site Error')
             }
 
         }
