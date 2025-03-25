@@ -1,11 +1,6 @@
 import * as Yup from 'yup';
 
-const UserSignUPSchema = Yup.object({
-    name: Yup.string()
-        .matches(/^[A-Za-z\s]{2,}$/, 'Name can only contain letters and spaces.')
-        .min(3, 'Name must be at least 3 characters long.')
-        .max(50, 'Name cannot exceed 50 characters.')
-        .required('Please enter your name.'),
+const UserLogInSchema = Yup.object({
 
     email: Yup.string()
         .matches(
@@ -22,9 +17,7 @@ const UserSignUPSchema = Yup.object({
         )
         .required('Password is required.'),
 
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
-        .required('Confirm Password is required.'),
+
 });
 
-export default UserSignUPSchema;
+export default UserLogInSchema;

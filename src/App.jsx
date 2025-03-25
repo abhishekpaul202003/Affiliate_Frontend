@@ -7,6 +7,8 @@ import Contact from './Components/Contact'
 import Featured from './Components/Featured'
 import Service from './Components/Service'
 import SignUp from './Components/SignUp/SignUp'
+import Login from './Components/LogIn/Login'
+import ForgotPassword from './Components/ForgotPassword'
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
         <Route path='/featured'  element={<Featured/>}/>
         <Route path='/service'  element={<Service/>}/>
         <Route path='/signUp'  element={<SignUp/>}/>
+        <Route path='/login'  element={<Login/>}/>
+        <Route path='/forgot-password'  element={<ForgotPassword/>}/>
       </Routes>
     </BrowserRouter>
   )

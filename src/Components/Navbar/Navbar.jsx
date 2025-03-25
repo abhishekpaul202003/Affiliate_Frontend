@@ -51,7 +51,7 @@ export default function Navbar() {
                     <IoSearch />
                     <IoPerson />
                 </div>
-                <button onClick={() => setMenuOpen(!menuOpen)}>
+                <button onClick={() => setMenuOpen(!menuOpen)}>5
                     {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
                 </button>
             </div>
