@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AiOutlineUserAdd, AiOutlineMail, AiOutlineLock, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FaUser } from 'react-icons/fa';
 import { FaRegImages } from "react-icons/fa6";
@@ -11,6 +11,7 @@ import { showSuccessToast, showErrorToast } from '../ToastifyNotification';
 
 export default function SignUp() {
 
+    const {userId} = useParams()
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,9 +23,11 @@ export default function SignUp() {
         onSubmit: async (values) => {
             try {
                 const response = await axios.post(`${APIURL}CreateUser`, values);
+
+                localStorage.setItem('UserMemail',response.data.email)
                 if (response.status === 200 || response.status === 201) {
                     showSuccessToast('Successfully Signed Up');
-                    navigate('/');
+                    navigate(`/OtpVerification/UserOtp/${response.data.id}`);
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Server Error');
