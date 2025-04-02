@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Navbar, Home, About, Contact, Featured, Service, SignUp, Login, OtpVerification, ForgotPassword } from './AllComponets'
+import { Navbar, Home, About, Contact, Featured, Service, SignUp, Login, 
+  OtpVerification, ForgotPassword, PageNotFound } from './AllComponets'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/OtpVerification/:type/:userId' element={<OtpVerification />} />
+        <Route path='/*' element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   )

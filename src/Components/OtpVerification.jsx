@@ -6,7 +6,8 @@ import { showSuccessToast, showErrorToast } from "./ToastifyNotification";
 
 export default function OtpVerification() {
   const navigate = useNavigate();
-//   const { id, type } = useParams();
+  const { userId, type } = useParams();
+
   const email = localStorage.getItem("UserMemail")
 
   const [code, setCode] = useState(new Array(4).fill(""));
@@ -59,26 +60,29 @@ export default function OtpVerification() {
     setIsLoading(true);
     
     try {
-    //   const userOtp = code.join("");
-  
-    //   if (!userOtp || userOtp.length !== 4) {
-    //     showErrorToast("Please enter a valid 4-digit OTP.");
-    //     return;
-    //   }
-  
-    //   let url = "";
-    //   if (type === "userLogin") {
-    //     url = `${LocalHost}VerifyUserOtp/${id}`;
-    //   } else if (type === "NewEmail") {
-    //     url = `${LocalHost}verifyUserEmail/${id}`;
-    //   } else {
-    //     showErrorToast("Invalid verification type.");
-    //     return;
-    //   }
-  
-    //   await axios.post(url, { otp: userOtp }, { headers: { "x-api-key": localStorage.getItem("Usertoken") } });
-    //   showSuccessToast(err.response?.data?.msg);
-    //   navigate("/login");
+      const userOtp = code.join("");
+      
+      if (!userOtp || userOtp.length !== 4) {
+        showErrorToast("Please enter a valid 4-digit OTP.");
+        return;
+      }
+      
+      let url = "";
+      if (type === "UserOtp") {
+        url = `${APIURL}otpVerification/${userId}`;
+      } else if (type === "NewEmail") {
+        url = `${APIURL}verifyUserEmail/${id}`;
+      } else {
+        showErrorToast("Invalid verification type.");
+        return;
+      } 
+      
+     
+      const response = await axios.post(url, { otp: userOtp } );
+      if(response.status==200){
+        showSuccessToast(response?.data?.msg);
+        navigate("/login");
+      }
     } catch (err) {
       showErrorToast(err.response?.data?.msg || "Failed to verify OTP");
     } finally {

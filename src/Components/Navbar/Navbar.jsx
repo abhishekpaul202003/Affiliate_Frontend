@@ -18,7 +18,11 @@ export default function Navbar() {
 
     return (
         <nav className="flex justify-between items-center h-16 bg-white md:px-32 px-10 text-black relative shadow-sm font-mono" role="navigation">
-            <h1>Logo</h1>
+            <h1>
+                <Link to='/'>
+                Logo
+                </Link>
+            </h1>
 
             <div className="hidden md:flex items-center gap-8">
                 <ul className="flex gap-5">
@@ -38,7 +42,7 @@ export default function Navbar() {
                         </div>
                         :
                         <Link to='/signUp' >
-                            <button className='bg-blue-400 px-2 py-1 rounded-md'>SignUp/LogIn</button>
+                            <button className='bg-blue-400 px-2 py-1 rounded-md cursor-pointer'>SignUp/LogIn</button>
                         </Link>
                     }
 
@@ -51,7 +55,7 @@ export default function Navbar() {
                     <IoSearch />
                     <IoPerson />
                 </div>
-                <button onClick={() => setMenuOpen(!menuOpen)}>5
+                <button onClick={() => setMenuOpen(!menuOpen)}>
                     {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
                 </button>
             </div>
@@ -66,7 +70,7 @@ export default function Navbar() {
                         </li>
                     ))}
                     <Link to='/signUp' >
-                        <button className='bg-blue-400 px-2 py-1 rounded-md'>SignUp/LogIn</button>
+                        <button className='bg-blue-400 px-2 py-1 rounded-md cursor-pointer'>SignUp/LogIn</button>
                     </Link>
                 </ul>
             </div>

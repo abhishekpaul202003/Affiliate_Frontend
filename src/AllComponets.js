@@ -8,3 +8,4 @@ export {default as Navbar} from './Components/Navbar/Navbar';
 export {default as OtpVerification} from './Components/OtpVerification';
 export {default as Service} from './Components/Service';
 export {default as SignUp} from './Components/SignUp/SignUp';
+export {default as PageNotFound} from './Components/PageNotFound';

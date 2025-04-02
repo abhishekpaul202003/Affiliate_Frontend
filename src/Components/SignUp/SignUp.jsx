@@ -47,7 +47,7 @@ export default function SignUp() {
         <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white rounded-xl p-8 w-96 shadow-lg">
                 
-                <h1 className="text-center text-2xl font-semibold pb-5 flex items-center justify-center gap-2">
+                <h1 className="text-center text-2xl font-semibold pb-5 flex items-center justify-center gap-2 select-none ">
                     <AiOutlineUserAdd className="text-blue-600" size={28} /> Sign Up
                 </h1>
 
@@ -80,7 +80,7 @@ export default function SignUp() {
                 </div>
                 <button
                     type="submit"
-                    className="w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                    className=" cursor-pointer w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
                 >
                     Sign Up
                 </button>

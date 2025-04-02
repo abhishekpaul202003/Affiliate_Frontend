@@ -18,9 +18,15 @@ export default function Login() {
         onSubmit: async (values) => {
             try {
                 const response = await axios.post(`${APIURL}UserLogIn`, values);
+                const userid = response.data?.userid
+                const usertoken = response.data?.token
+                
+                localStorage.setItem("UserId",userid)
+                localStorage.setItem("usertoken",usertoken)
+
                 if (response.status === 200) {
                     showSuccessToast('Successfully Logged In');
-                    navigate('/dashboard');
+                    navigate('/');
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Invalid Credentials');
