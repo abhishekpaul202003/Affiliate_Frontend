@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
-
-    const [log, setLog] = useState(false)
+    const [log, setLog] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const MENUDATA = [
         { name: 'Home', href: '/' },
@@ -16,61 +16,81 @@ export default function Navbar() {
         { name: 'Contact Me', href: '/contact' },
     ];
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        console.log("Searching for:", searchQuery);
+    };
+
     return (
-        <nav className="flex justify-between items-center h-16 bg-white md:px-32 px-10 text-black relative shadow-sm font-mono" role="navigation">
-            <h1>
-                <Link to='/'>
-                Logo
-                </Link>
+        <nav className="flex fixed w-full justify-between items-center h-16 bg-white shadow-md px-6 md:px-20 font-sans">
+            {/* Logo */}
+            <h1 className="text-2xl font-bold text-blue-600">
+                <Link to='/'>Logo</Link>
             </h1>
 
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-                <ul className="flex gap-5">
+                <ul className="flex gap-6 text-gray-700 font-medium">
                     {MENUDATA.map((item, index) => (
                         <li key={index}>
-                            <Link to={item.href}>{item.name}</Link>
+                            <Link to={item.href} className="hover:text-blue-500 transition duration-200">{item.name}</Link>
                         </li>
                     ))}
                 </ul>
 
-                <div className="flex gap-3 items-center text-xl">
-                    <IoSearch className='text-gray-400' />
-
-                    {log ?
-                        <div >
-                            <IoPerson className='text-gray-400' />
-                        </div>
-                        :
-                        <Link to='/signUp' >
-                            <button className='bg-blue-400 px-2 py-1 rounded-md cursor-pointer'>SignUp/LogIn</button>
+                <div className="flex gap-4 items-center text-gray-600">
+                    <form onSubmit={handleSearch} className="relative">
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
+                            value={searchQuery} 
+                            onChange={(e) => setSearchQuery(e.target.value)} 
+                            className="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
+                            <IoSearch />
+                        </button>
+                    </form>
+                    {log ? (
+                        <IoPerson className='cursor-pointer hover:text-gray-800 transition' />
+                    ) : (
+                        <Link to='/signUp'>
+                            <button className='bg-blue-500 text-white px-4 py-1.5 rounded-lg hover:bg-blue-600 transition'>SignUp/LogIn</button>
                         </Link>
-                    }
-
+                    )}
                 </div>
-
             </div>
 
-            <div className="md:hidden flex items-center gap-5 text-gray-400">
-                <div className="flex gap-3 text-xl">
-                    <IoSearch />
-                    <IoPerson />
-                </div>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center gap-4 text-gray-600">
+                <form onSubmit={handleSearch} className="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search..." 
+                        value={searchQuery} 
+                        onChange={(e) => setSearchQuery(e.target.value)} 
+                        className="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
+                        <IoSearch />
+                    </button>
+                </form>
+                <IoPerson className='cursor-pointer' />
                 <button onClick={() => setMenuOpen(!menuOpen)}>
                     {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
                 </button>
             </div>
 
-            <div className={`absolute top-16 left-0 w-full bg-gray-800 md:hidden transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"}`}>
-                <ul className="flex flex-col text-center space-y-4 p-4">
+            {/* Mobile Menu */}
+            <div className={`absolute top-16 left-0 w-full bg-white shadow-md md:hidden transition-transform duration-300 ease-in-out ${menuOpen ? "translate-y-0" : "-translate-y-full"}`}>
+                <ul className="flex flex-col text-center py-4 space-y-4 text-gray-700 font-medium">
                     {MENUDATA.map((item, index) => (
                         <li key={index}>
-                            <Link to={item.href} className="block rounded-md text-xl font-semibold px-3 py-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white">
-                                {item.name}
-                            </Link>
+                            <Link to={item.href} className="block text-lg hover:text-blue-500 transition">{item.name}</Link>
                         </li>
                     ))}
-                    <Link to='/signUp' >
-                        <button className='bg-blue-400 px-2 py-1 rounded-md cursor-pointer'>SignUp/LogIn</button>
+                    <Link to='/signUp'>
+                        <button className='bg-blue-500 text-white px-4 py-1.5 rounded-lg hover:bg-blue-600 transition'>SignUp/LogIn</button>
                     </Link>
                 </ul>
             </div>

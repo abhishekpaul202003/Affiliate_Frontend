@@ -10,21 +10,30 @@ import { APIURL } from '../../GlobalURL';
 import { showSuccessToast, showErrorToast } from '../ToastifyNotification';
 
 export default function SignUp() {
-
-    const {userId} = useParams()
+    const { userId } = useParams();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { values, handleChange, handleSubmit, errors, touched, handleBlur } = useFormik({
-        initialValues: {profileImg:'', name: '', email: '', password: '', confirmPassword: '' },
+    const { values, handleChange, handleSubmit, errors, touched, handleBlur, setFieldValue } = useFormik({
+        initialValues: { profileImg: '', name: '', email: '', password: '', confirmPassword: '' },
         validationSchema: UserSignUPSchema,
-        
         onSubmit: async (values) => {
             try {
-                const response = await axios.post(`${APIURL}CreateUser`, values);
 
-                localStorage.setItem('UserMemail',response.data.email)
+                const formData = new FormData();
+
+                Object.keys(values).forEach((key) => {
+                    if (key !== "profileImg") formData.append(key, values[key]);
+                });
+
+                if (values.profileImg) {
+                    formData.append('profileImg', values.profileImg);
+                }
+
+                const response = await axios.post(`${APIURL}CreateUser`, formData);
+
+                localStorage.setItem('UserMemail', response.data.email);
                 if (response.status === 200 || response.status === 201) {
                     showSuccessToast('Successfully Signed Up');
                     navigate(`/OtpVerification/UserOtp/${response.data.id}`);
@@ -40,13 +49,19 @@ export default function SignUp() {
         { name: 'email', placeholder: 'Enter Your Email', type: 'email', icon: <AiOutlineMail className="text-gray-500" /> },
         { name: 'password', placeholder: 'Enter Your Password', type: showPassword ? 'text' : 'password', icon: <AiOutlineLock className="text-gray-500" />, toggle: () => setShowPassword(!showPassword), show: showPassword },
         { name: 'confirmPassword', placeholder: 'Confirm Your Password', type: showConfirmPassword ? 'text' : 'password', icon: <AiOutlineLock className="text-gray-500" />, toggle: () => setShowConfirmPassword(!showConfirmPassword), show: showConfirmPassword },
-        { name: 'profileImg', type: 'file', icon: <FaRegImages className="text-gray-500" /> },
     ];
+
+    function handleImageChange(e) {
+        const file = e.target.files[0];
+        if (file) {
+            setFieldValue("profileImg", file); 
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white rounded-xl p-8 w-96 shadow-lg">
-                
+
                 <h1 className="text-center text-2xl font-semibold pb-5 flex items-center justify-center gap-2 select-none ">
                     <AiOutlineUserAdd className="text-blue-600" size={28} /> Sign Up
                 </h1>
@@ -55,7 +70,6 @@ export default function SignUp() {
                     {INPUTDATA.map(({ name, placeholder, type, icon, toggle, show }, index) => (
                         <div key={index} className="flex flex-col">
                             <div className="flex items-center bg-gray-200 rounded-md py-2 px-3 relative">
-                                {icon}
                                 <input
                                     name={name}
                                     type={type}
@@ -65,7 +79,6 @@ export default function SignUp() {
                                     onBlur={handleBlur}
                                     className='placeholder-gray-500 bg-transparent flex-1 ml-2 focus:outline-none'
                                 />
-
                                 {toggle && (
                                     <button type="button" onClick={toggle} className="absolute right-3 text-gray-600">
                                         {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
@@ -77,13 +90,28 @@ export default function SignUp() {
                             )}
                         </div>
                     ))}
+
+                    {/* Upload Image */}
+                    <div className="flex flex-col">
+                        <div className="flex items-center bg-gray-200 rounded-md py-2 px-3 relative">
+                            <input
+                                name='profileImg'
+                                type='file'
+                                onChange={handleImageChange}
+                                className='placeholder-gray-500 bg-transparent flex-1 ml-2 focus:outline-none'
+                            />
+                        </div>
+                        
+                    </div>
                 </div>
+
                 <button
                     type="submit"
                     className=" cursor-pointer w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
                 >
                     Sign Up
                 </button>
+
                 <p className="text-center text-sm mt-3">
                     Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Log in</Link>
                 </p>
