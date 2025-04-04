@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { FaBars } from "react-icons/fa";
 import { IoCloseSharp, IoSearch, IoPerson } from "react-icons/io5";
 import { Link } from 'react-router-dom';
+import Search from './Search';
+import DropDownMenu from './DropDownMenu';
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [log, setLog] = useState(false);
+    const [log, setLog] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
 
     const MENUDATA = [
@@ -16,10 +18,7 @@ export default function Navbar() {
         { name: 'Contact Me', href: '/contact' },
     ];
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        console.log("Searching for:", searchQuery);
-    };
+   
 
     return (
         <nav className="flex fixed w-full justify-between items-center h-16 bg-white shadow-md px-6 md:px-20 font-sans">
@@ -39,20 +38,11 @@ export default function Navbar() {
                 </ul>
 
                 <div className="flex gap-4 items-center text-gray-600">
-                    <form onSubmit={handleSearch} className="relative">
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
-                            value={searchQuery} 
-                            onChange={(e) => setSearchQuery(e.target.value)} 
-                            className="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
-                            <IoSearch />
-                        </button>
-                    </form>
+                    
+                    <Search/>
+
                     {log ? (
-                        <IoPerson className='cursor-pointer hover:text-gray-800 transition' />
+                        <DropDownMenu/>
                     ) : (
                         <Link to='/signUp'>
                             <button className='bg-blue-500 text-white px-4 py-1.5 rounded-lg hover:bg-blue-600 transition'>SignUp/LogIn</button>
@@ -63,18 +53,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-4 text-gray-600">
-                <form onSubmit={handleSearch} className="relative">
-                    <input 
-                        type="text" 
-                        placeholder="Search..." 
-                        value={searchQuery} 
-                        onChange={(e) => setSearchQuery(e.target.value)} 
-                        className="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
-                        <IoSearch />
-                    </button>
-                </form>
+               
                 <IoPerson className='cursor-pointer' />
                 <button onClick={() => setMenuOpen(!menuOpen)}>
                     {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
