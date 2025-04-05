@@ -26,7 +26,7 @@ export default function Login() {
 
                 if (response.status === 200) {
                     showSuccessToast('Successfully Logged In');
-                    navigate('/');
+                    // navigate('/');
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Invalid Credentials');
@@ -37,7 +37,7 @@ export default function Login() {
     return (
         <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white rounded-xl p-8 w-96 shadow-lg">
-                <h1 className="text-center text-2xl font-semibold pb-5">Login</h1>
+                <h1 className="text-center text-2xl font-semibold pb-5 select-none">Login</h1>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col">
                         <div className="flex items-center bg-gray-200 rounded-md py-2 px-3">

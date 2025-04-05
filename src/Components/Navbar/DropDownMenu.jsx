@@ -14,7 +14,7 @@ export default function DropDownMenu() {
     navigate('/');
   };
 
-  const UserIMG = 'https://res.cloudinary.com/dv4glc02h/image/upload/v1743767445/miqosvel78dylfk3nfva.jpg'
+  const UserIMG = 'https://res.cloudinary.com/dv4glc02h/image/upload/v1743767445/miqosvel78dylfk3nfva.jpg '
 
   const DROPDOWNMENUDATA = [
     { name: 'Your Profile', href: '/profile', icon: <FaUser className="size-4 mr-2" /> },
