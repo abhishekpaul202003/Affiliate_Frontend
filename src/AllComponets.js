@@ -9,3 +9,6 @@ export {default as OtpVerification} from './Components/OtpVerification';
 export {default as Service} from './Components/Service';
 export {default as SignUp} from './Components/SignUp/SignUp';
 export {default as PageNotFound} from './Components/PageNotFound';
+export {default as Footer} from './Components/Footer';
+export {default as UserProfile} from './Components/UserData/UserProfile';
+export {default as Setting} from './Components/UserData/Setting';

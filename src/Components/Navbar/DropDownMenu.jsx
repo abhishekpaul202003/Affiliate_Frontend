@@ -2,22 +2,22 @@ import React from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-// import { useAuth } from '../Contexts/AuthContext';
+import { useAuth } from '../context/AuthConetxt';
 
 export default function DropDownMenu() {
-//   const { setIsLoggedIn,setUserImage, UserImage } = useAuth();
+  const { setIsLoggedIn,setUserImage, UserImage } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // setUserImage(null)
-    // setIsLoggedIn(false);
+    setUserImage(null)
+    setIsLoggedIn(false);
     navigate('/');
   };
 
-  const UserIMG = 'https://res.cloudinary.com/dv4glc02h/image/upload/v1743767445/miqosvel78dylfk3nfva.jpg '
+  const UserIMG = UserImage
 
   const DROPDOWNMENUDATA = [
-    { name: 'Your Profile', href: '/profile', icon: <FaUser className="size-4 mr-2" /> },
+    { name: 'Your Profile', href: '/UserProfile', icon: <FaUser className="size-4 mr-2" /> },
     { name: 'Settings', href: '/setting', icon: <FaCog className="size-4 mr-2" /> },
     { name: 'Logout', onClick: handleLogout, icon: <FaSignOutAlt className="size-4 mr-2" /> },
   ];
@@ -30,7 +30,7 @@ export default function DropDownMenu() {
             <span className="absolute -inset-1.5" />
             <span className="sr-only">Open user menu</span>
             {UserIMG ? (
-              <img className="size-10 rounded-full" src='https://res.cloudinary.com/dv4glc02h/image/upload/v1743767445/miqosvel78dylfk3nfva.jpg' alt="User Profile" />
+              <img className="size-10 rounded-full" src={UserIMG} alt="User Profile" />
             ) : (
               <FaUser className="size-8 text-white bg-gray-600 rounded-full p-1" />
             )}

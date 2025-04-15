@@ -4,10 +4,11 @@ import { IoCloseSharp } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import Search from './Search';
 import DropDownMenu from './DropDownMenu';
+import {useAuth} from '../context/AuthConetxt'
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [log, setLog] = useState(true);
+    const {isLoggedIn} = useAuth()
 
     const MENUDATA = [
         { name: 'Home', href: '/' },
@@ -18,7 +19,7 @@ export default function Navbar() {
     ];
 
     const handleLinkClick = () => {
-        setMenuOpen(false); // Close menu on click
+        setMenuOpen(false); 
     };
 
     return (
@@ -40,7 +41,7 @@ export default function Navbar() {
 
                 <div className="flex gap-4 items-center text-gray-600">
                     <Search />
-                    {log ? (
+                    {isLoggedIn ? (
                         <DropDownMenu />
                     ) : (
                         <Link to='/signUp'>

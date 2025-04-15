@@ -6,10 +6,13 @@ import axios from 'axios';
 import { APIURL } from '../../GlobalURL';
 import { showSuccessToast, showErrorToast } from '../ToastifyNotification';
 import UserLogInSchema from './LogInValidation'
+import {useAuth} from '../context/AuthConetxt'
 
 export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+
+    const {setIsLoggedIn,setUserImage, setUserData} = useAuth()
 
     const { values, handleChange, handleSubmit, errors, touched, handleBlur } = useFormik({
         initialValues: { email: '', password: '' },
@@ -20,13 +23,16 @@ export default function Login() {
                 const response = await axios.post(`${APIURL}UserLogIn`, values);
                 const userid = response.data?.userid
                 const usertoken = response.data?.token
-                
+               
                 localStorage.setItem("UserId",userid)
                 localStorage.setItem("usertoken",usertoken)
-
+                console.log(response.data.data)
                 if (response.status === 200) {
                     showSuccessToast('Successfully Logged In');
-                    // navigate('/');
+                    setIsLoggedIn(true)
+                    setUserImage(response.data.data.img[0].url)
+                    setUserData(response.data.data)
+                    navigate('/');
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Invalid Credentials');
