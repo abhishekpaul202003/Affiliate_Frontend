@@ -2,7 +2,7 @@ export {default as About} from './Components/Abour';
 export {default as Contact} from './Components/Contact';
 export {default as Featured} from './Components/Featured';
 export {default as ForgotPassword} from './Components/ForgotPassword';
-export {default as Home} from './Components/Home';
+export {default as Home} from './Components/Home/Home';
 export {default as Login} from './Components/LogIn/Login';
 export {default as Navbar} from './Components/Navbar/Navbar';
 export {default as OtpVerification} from './Components/OtpVerification';

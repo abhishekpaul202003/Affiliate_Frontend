@@ -4,11 +4,11 @@ import { IoCloseSharp } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import Search from './Search';
 import DropDownMenu from './DropDownMenu';
-import {useAuth} from '../context/AuthConetxt'
+import { useAuth } from '../context/AuthConetxt'
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const {isLoggedIn} = useAuth()
+    const { isLoggedIn } = useAuth()
 
     const MENUDATA = [
         { name: 'Home', href: '/' },
@@ -19,7 +19,7 @@ export default function Navbar() {
     ];
 
     const handleLinkClick = () => {
-        setMenuOpen(false); 
+        setMenuOpen(false);
     };
 
     return (
@@ -34,7 +34,7 @@ export default function Navbar() {
                 <ul className="flex gap-6 text-gray-700 font-medium">
                     {MENUDATA.map((item, index) => (
                         <li key={index}>
-                            <Link to={item.href} className="hover:text-blue-500 transition duration-200">{item.name}</Link>
+                            <Link to={item.href} className="hover:text-blue-500 transition duration-200 cursor-pointer select-none">{item.name}</Link>
                         </li>
                     ))}
                 </ul>
@@ -51,15 +51,17 @@ export default function Navbar() {
                 </div>
             </div>
 
-                 
+
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-4 text-gray-600">
-            <div className='mr-10 z-50'>
-                <button onClick={() => setMenuOpen(!menuOpen)}>
-                    {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
-                </button>
-            <div className='select-none'><DropDownMenu /></div>
-            </div>
+                <div className='flex items-center mr-10 z-50'>
+                    <button onClick={() => setMenuOpen(!menuOpen)}>
+                        {menuOpen ? <IoCloseSharp className="text-2xl" /> : <FaBars className="text-2xl" />}
+                    </button>
+                    <div className='select-none'>
+                        {isLoggedIn && <DropDownMenu />}
+                    </div>
+                </div>
             </div>
 
             {/* Mobile Menu */}

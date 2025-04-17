@@ -11,7 +11,8 @@ import { useAuth } from '../context/AuthConetxt';
 export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [isAdminLogin, setIsAdminLogin] = useState(false); // Toggle between user and admin login
+    const [isAdminLogin, setIsAdminLogin] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // 🔁 Loading state
 
     const { setIsLoggedIn, setUserImage, setUserData } = useAuth();
 
@@ -21,6 +22,7 @@ export default function Login() {
 
         onSubmit: async (values) => {
             try {
+                setIsLoading(true); // ⏳ Start loading
                 if (isAdminLogin) {
                     await handleAdminLogin(values);
                 } else {
@@ -28,6 +30,8 @@ export default function Login() {
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Invalid Credentials');
+            } finally {
+                setIsLoading(false); // ✅ Stop loading
             }
         }
     });
@@ -39,7 +43,7 @@ export default function Login() {
 
         localStorage.setItem("UserId", userid);
         localStorage.setItem("usertoken", usertoken);
-        
+
         if (response.status === 200) {
             showSuccessToast('Successfully Logged In');
             setIsLoggedIn(true);
@@ -51,19 +55,15 @@ export default function Login() {
 
     const handleAdminLogin = async (credentials) => {
         const response = await axios.post(`${APIURL}AdminLogIn`, credentials);
-        console.log(response)
         const adminid = response.data?.adminid;
         const admintoken = response.data?.token;
-        
-        console.log(adminid)
-        console.log(admintoken)
+
         localStorage.setItem("AdminId", adminid);
         localStorage.setItem("admintoken", admintoken);
-        
+
         if (response.status === 200) {
             showSuccessToast('Admin Successfully Logged In');
             setIsLoggedIn(true);
-           
             navigate(`/OtpVerification/AdminVerify/${adminid}`);
         }
     };
@@ -78,8 +78,9 @@ export default function Login() {
                 <h1 className="text-center text-2xl font-semibold pb-5 select-none">
                     {isAdminLogin ? 'Admin Login' : 'User Login'}
                 </h1>
-                
+
                 <div className="flex flex-col gap-4">
+                    {/* Email Input */}
                     <div className="flex flex-col">
                         <div className="flex items-center bg-gray-200 rounded-md py-2 px-3">
                             <AiOutlineMail className="text-gray-500" />
@@ -98,6 +99,7 @@ export default function Login() {
                         )}
                     </div>
 
+                    {/* Password Input */}
                     <div className="flex flex-col">
                         <div className="flex items-center bg-gray-200 rounded-md py-2 px-3 relative">
                             <AiOutlineLock className="text-gray-500" />
@@ -119,18 +121,28 @@ export default function Login() {
                         )}
                     </div>
                 </div>
-                
+
                 {!isAdminLogin && (
                     <div className="text-right mt-2">
                         <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">Forgot Password?</Link>
                     </div>
                 )}
-                
+
+                {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                    disabled={isLoading}
+                    className={`w-full mt-5 py-2 px-4 text-white rounded-md transition duration-300 flex justify-center items-center gap-2 ${
+                        isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
                 >
-                    {isAdminLogin ? 'Admin Login' : 'User Login'}
+                    {isLoading && (
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                    )}
+                    {isLoading ? 'Logging in...' : isAdminLogin ? 'Admin Login' : 'User Login'}
                 </button>
 
                 <button
@@ -140,7 +152,7 @@ export default function Login() {
                 >
                     Switch to {isAdminLogin ? 'User Login' : 'Admin Login'}
                 </button>
-                
+
                 {!isAdminLogin && (
                     <p className="text-center text-sm mt-3">
                         Don't have an account? <Link to="/signup" className="text-blue-600 hover:underline">Sign Up</Link>

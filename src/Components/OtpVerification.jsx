@@ -45,9 +45,12 @@ export default function OtpVerification() {
   const handleResendOTP = useCallback(async () => {
     try {
       setIsLoading(true);
-      const endpoint = type === "UserOtp" ? "resendOtp" :
-        type === "NewEmail" ? "resendEmailVerification" :
-          "resendAdminOtp";
+      const endpoint =
+        type === "UserOtp"
+          ? "resendOtp"
+          : type === "NewEmail"
+          ? "resendEmailVerification"
+          : "resendAdminOtp";
 
       await axios.post(`${APIURL}${endpoint}/${userId}`);
       showSuccessToast("OTP resent successfully!");
@@ -77,62 +80,72 @@ export default function OtpVerification() {
     inputRefs.current[0]?.focus();
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setIsLoading(true);
 
-    try {
-      const userOtp = code.join("");
-      if (!userOtp || userOtp.length !== OTP_LENGTH) {
-        showErrorToast("Please enter a valid 4-digit OTP.");
-        return;
-      }
-
-      let endpoint;
-      switch (type) {
-        case "UserOtp":
-          endpoint = `otpVerification/${userId}`;
-          break;
-        case "NewEmail":
-          endpoint = `verifyUserEmail/${userId}`;
-          break;
-        case "AdminVerify":
-          endpoint = `AdminOTPVerification/${userId}`;
-          break;
-        default:
-          showErrorToast("Invalid verification type.");
+      try {
+        const userOtp = code.join("");
+        if (!userOtp || userOtp.length !== OTP_LENGTH) {
+          showErrorToast("Please enter a valid 4-digit OTP.");
           return;
+        }
+
+        let endpoint;
+        switch (type) {
+          case "UserOtp":
+            endpoint = `otpVerification/${userId}`;
+            break;
+          case "NewEmail":
+            endpoint = `verifyUserEmail/${userId}`;
+            break;
+          case "AdminVerify":
+            endpoint = `AdminOTPVerification/${userId}`;
+            break;
+          default:
+            showErrorToast("Invalid verification type.");
+            return;
+        }
+
+        const response = await axios.post(`${APIURL}${endpoint}`, { otp: userOtp });
+
+        if (response.status === 200) {
+          showSuccessToast(response.data?.msg || "Verification successful!");
+
+          const redirectPath = type === "AdminVerify" ? "/adminhome" : "/login";
+          navigate(redirectPath);
+        }
+      } catch (err) {
+        showErrorToast(err.response?.data?.msg || "Failed to verify OTP");
+      } finally {
+        setIsLoading(false);
       }
-
-      const response = await axios.post(`${APIURL}${endpoint}`, { otp: userOtp });
-
-      if (response.status === 200) {
-        showSuccessToast(response.data?.msg || "Verification successful!");
-
-        const redirectPath = type === "AdminVerify" ? "/adminhome" : "/login";
-        navigate(redirectPath);
-      }
-    } catch (err) {
-      showErrorToast(err.response?.data?.msg || "Failed to verify OTP");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [code, type, userId, navigate]);
+    },
+    [code, type, userId, navigate]
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4 relative">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
+          <PulseLoader color="#ffffff" size={15} />
+        </div>
+      )}
+
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden z-10">
         <div className="bg-blue-600 p-6 text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-white p-3 rounded-full">
               <FiMail className="text-blue-600 text-2xl" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white">Email Verification</h1>
+          <h1 className="text-2xl font-bold text-white select-none">Email Verification</h1>
         </div>
 
         <div className="p-8">
-          <p className="text-gray-600 text-center mb-6">
+          <p className="text-gray-600 text-center mb-6 select-none">
             We've sent a {OTP_LENGTH}-digit code to <span className="font-semibold">{email}</span>
           </p>
 
@@ -141,7 +154,7 @@ export default function OtpVerification() {
               {code.map((digit, index) => (
                 <input
                   key={index}
-                  ref={el => inputRefs.current[index] = el}
+                  ref={(el) => (inputRefs.current[index] = el)}
                   className="w-14 h-14 text-center text-2xl font-medium border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   type="text"
                   inputMode="numeric"

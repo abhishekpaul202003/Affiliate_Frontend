@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AiOutlineUserAdd, AiOutlineMail, AiOutlineLock, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FaUser } from 'react-icons/fa';
-import { FaRegImages } from "react-icons/fa6";
+import { motion } from 'framer-motion'; // <-- Import motion
 import UserSignUPSchema from './SignupValidation';
 import axios from 'axios';
 import { APIURL } from '../../GlobalURL';
@@ -14,13 +14,14 @@ export default function SignUp() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, SetLoading] = useState(false);
 
     const { values, handleChange, handleSubmit, errors, touched, handleBlur, setFieldValue } = useFormik({
         initialValues: { profileImg: '', name: '', email: '', password: '', confirmPassword: '' },
         validationSchema: UserSignUPSchema,
         onSubmit: async (values) => {
             try {
-
+                SetLoading(true);
                 const formData = new FormData();
 
                 Object.keys(values).forEach((key) => {
@@ -40,6 +41,8 @@ export default function SignUp() {
                 }
             } catch (e) {
                 showErrorToast(e.response?.data?.msg || 'Server Error');
+            } finally {
+                SetLoading(false);
             }
         }
     });
@@ -59,10 +62,20 @@ export default function SignUp() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen bg-gray-100">
-            <div className="bg-white rounded-xl p-8 w-96 shadow-lg">
-
-                <h1 className="text-center text-2xl font-semibold pb-5 flex items-center justify-center gap-2 select-none ">
+        <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center items-center h-screen bg-gray-100"
+        >
+            <motion.div
+                className="bg-white rounded-xl p-8 w-96 shadow-lg"
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+            >
+                <h1 className="text-center text-2xl font-semibold pb-5 flex items-center justify-center gap-2 select-none">
                     <AiOutlineUserAdd className="text-blue-600" size={28} /> Sign Up
                 </h1>
 
@@ -70,6 +83,7 @@ export default function SignUp() {
                     {INPUTDATA.map(({ name, placeholder, type, icon, toggle, show }, index) => (
                         <div key={index} className="flex flex-col">
                             <div className="flex items-center bg-gray-200 rounded-md py-2 px-3 relative">
+                                {icon}
                                 <input
                                     name={name}
                                     type={type}
@@ -101,21 +115,34 @@ export default function SignUp() {
                                 className='placeholder-gray-500 bg-transparent flex-1 ml-2 focus:outline-none'
                             />
                         </div>
-                        
                     </div>
                 </div>
 
                 <button
                     type="submit"
-                    className=" cursor-pointer w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                    disabled={isLoading}
+                    className="flex justify-center items-center gap-2 w-full mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
                 >
-                    Sign Up
+                    {isLoading ? (
+                        <>
+                            <svg
+                                className="animate-spin h-5 w-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                            Signing Up...
+                        </>
+                    ) : 'Sign Up'}
                 </button>
 
                 <p className="text-center text-sm mt-3">
                     Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Log in</Link>
                 </p>
-            </div>
-        </form>
+            </motion.div>
+        </motion.form>
     );
 }
