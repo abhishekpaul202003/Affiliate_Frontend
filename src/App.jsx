@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate, Outlet, useLocation } from 'react-router-dom';
 import {
-  Navbar, Home, About, Contact, Featured, Service, SignUp, Login,
+  Navbar, Home, About, Contact, Featured, Service, SignUp, Login, AdminHome,
   OtpVerification, ForgotPassword, PageNotFound, Footer, UserProfile, Setting
 } from './AllComponets';
 
 function App() {
   const [isAuthentication, isUserAuthentication] = useState(false);
 
-  const HideFooterRoutes = ['/login', '/signup', '/otpverification', '/userprofile', '/setting'];
+  const HideFooterRoutes = ['/login', '/signup', '/otpverification', '/userprofile', '/setting','/adminhome'];
 
   const Wrapper = () => {
     const location = useLocation();
@@ -35,6 +35,7 @@ function App() {
 
           {/* Private Route */}
           <Route path='/OtpVerification/:type/:userId' element={<OtpVerification />} />
+          <Route path='/adminhome' element={<AdminHome />} />
         </Routes>
         {!shouldHideFooter && <Footer />}
       </>

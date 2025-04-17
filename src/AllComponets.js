@@ -12,3 +12,4 @@ export {default as PageNotFound} from './Components/PageNotFound';
 export {default as Footer} from './Components/Footer';
 export {default as UserProfile} from './Components/UserData/UserProfile';
 export {default as Setting} from './Components/UserData/Setting';
+export {default as AdminHome} from './Components/Admin/AdminHome';

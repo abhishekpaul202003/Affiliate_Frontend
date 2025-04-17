@@ -1,156 +1,193 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { APIURL } from "../GlobalURL";
 import axios from "axios";
 import { showSuccessToast, showErrorToast } from "./ToastifyNotification";
+import { FiMail } from "react-icons/fi";
+import { PulseLoader } from "react-spinners";
+
+const OTP_LENGTH = 4;
+const RESEND_TIMEOUT = 30;
 
 export default function OtpVerification() {
   const navigate = useNavigate();
   const { userId, type } = useParams();
-
-  const email = localStorage.getItem("UserMemail")
-
-  const [code, setCode] = useState(new Array(4).fill(""));
-  const [isLoading, setIsLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [canResend, setCanResend] = useState(false);
-  // Create a useRef array to store input references
+  const email = localStorage.getItem("UserMemail");
   const inputRefs = useRef([]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setCanResend(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const [code, setCode] = useState(Array(OTP_LENGTH).fill(""));
+  const [isLoading, setIsLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(RESEND_TIMEOUT);
+  const [canResend, setCanResend] = useState(false);
 
-    return () => clearInterval(timer);
-  }, []);
-
-  const handleResendOTP = async () => {
-
-    };
-
-  const handleChange = (element, index) => {
+  const handleChange = useCallback((element, index) => {
     const value = element.value;
     if (!/^\d?$/.test(value)) return;
 
-    let newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
+    setCode(prev => {
+      const newCode = [...prev];
+      newCode[index] = value;
 
-    if (value && index < code.length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
+      if (value && index < OTP_LENGTH - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
 
-  const handleKeyDown = (e, index) => {
+      return newCode;
+    });
+  }, []);
+
+  const handleKeyDown = useCallback((e, index) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
-  };
+  }, [code]);
 
-  const handleSubmit = async (e) => {
+  const handleResendOTP = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const endpoint = type === "UserOtp" ? "resendOtp" :
+        type === "NewEmail" ? "resendEmailVerification" :
+          "resendAdminOtp";
+
+      await axios.post(`${APIURL}${endpoint}/${userId}`);
+      showSuccessToast("OTP resent successfully!");
+      setTimeLeft(RESEND_TIMEOUT);
+      setCanResend(false);
+    } catch (err) {
+      showErrorToast(err.response?.data?.msg || "Failed to resend OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [type, userId]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setCanResend(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
+
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const userOtp = code.join("");
-      
-      if (!userOtp || userOtp.length !== 4) {
+      if (!userOtp || userOtp.length !== OTP_LENGTH) {
         showErrorToast("Please enter a valid 4-digit OTP.");
         return;
       }
-      
-      let url = "";
-      if (type === "UserOtp") {
-        url = `${APIURL}otpVerification/${userId}`;
-      } else if (type === "NewEmail") {
-        url = `${APIURL}verifyUserEmail/${id}`;
-      } else {
-        showErrorToast("Invalid verification type.");
-        return;
-      } 
-      
-     
-      const response = await axios.post(url, { otp: userOtp } );
-      if(response.status==200){
-        showSuccessToast(response?.data?.msg);
-        navigate("/login");
+
+      let endpoint;
+      switch (type) {
+        case "UserOtp":
+          endpoint = `otpVerification/${userId}`;
+          break;
+        case "NewEmail":
+          endpoint = `verifyUserEmail/${userId}`;
+          break;
+        case "AdminVerify":
+          endpoint = `AdminOTPVerification/${userId}`;
+          break;
+        default:
+          showErrorToast("Invalid verification type.");
+          return;
+      }
+
+      const response = await axios.post(`${APIURL}${endpoint}`, { otp: userOtp });
+
+      if (response.status === 200) {
+        showSuccessToast(response.data?.msg || "Verification successful!");
+
+        const redirectPath = type === "AdminVerify" ? "/adminhome" : "/login";
+        navigate(redirectPath);
       }
     } catch (err) {
       showErrorToast(err.response?.data?.msg || "Failed to verify OTP");
     } finally {
       setIsLoading(false);
     }
-  };
-  
+  }, [code, type, userId, navigate]);
 
   return (
-    <div className="flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-12">
-      <div className="bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
-        <div className="mx-auto flex w-full max-w-md flex-col space-y-16">
-          <div className="flex flex-col items-center justify-center text-center space-y-2">
-            <div className="font-semibold text-3xl">
-              <p>Email Verification</p>
-            </div>
-            <div className="flex flex-row text-sm font-medium text-gray-400">
-              <p>
-                We have sent a code to your email - <span className="font-bold">{email}</span>
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-blue-600 p-6 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-white p-3 rounded-full">
+              <FiMail className="text-blue-600 text-2xl" />
             </div>
           </div>
+          <h1 className="text-2xl font-bold text-white">Email Verification</h1>
+        </div>
 
-          <div>
-            <form onSubmit={handleSubmit}>
-              <div className="flex flex-col space-y-16">
-                <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-                  {code.map((data, index) => (
-                    <div key={index} className="w-16 h-16">
-                      <input
-                        ref={(el) => (inputRefs.current[index] = el)} 
-                        className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-                        type="text"
-                        maxLength="1"
-                        value={data}
-                        onChange={(e) => handleChange(e.target, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        onFocus={(e) => e.target.select()}
-                      />
-                    </div>
-                  ))}
-                </div>
+        <div className="p-8">
+          <p className="text-gray-600 text-center mb-6">
+            We've sent a {OTP_LENGTH}-digit code to <span className="font-semibold">{email}</span>
+          </p>
 
-                <div className="flex flex-col space-y-5">
-                  <div>
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="flex flex-row items-center justify-center text-center w-full border rounded-xl outline-none py-5 bg-blue-700 border-none text-white text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isLoading ? "Verifying..." : "Verify Account"}
-                    </button>
-                  </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex justify-center gap-3">
+              {code.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={el => inputRefs.current[index] = el}
+                  className="w-14 h-14 text-center text-2xl font-medium border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleChange(e.target, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  onFocus={(e) => e.target.select()}
+                  disabled={isLoading}
+                />
+              ))}
+            </div>
 
-                  <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-                    <p>Didn't receive code?</p>
-                    {canResend ? (
-                      <button type="button" onClick={handleResendOTP} className="text-blue-600 cursor-pointer">
-                        Resend
-                      </button>
-                    ) : (
-                      <span>Resend in {timeLeft}s</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <PulseLoader color="#ffffff" size={8} className="mr-2" />
+                  Verifying...
+                </>
+              ) : (
+                "Verify Account"
+              )}
+            </button>
+
+            <div className="text-center text-sm text-gray-500">
+              {canResend ? (
+                <button
+                  type="button"
+                  onClick={handleResendOTP}
+                  disabled={isLoading}
+                  className="text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Resend Code
+                </button>
+              ) : (
+                <p>
+                  Resend code in <span className="font-medium">{timeLeft}s</span>
+                </p>
+              )}
+            </div>
+          </form>
         </div>
       </div>
     </div>
