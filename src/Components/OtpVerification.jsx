@@ -12,7 +12,7 @@ const RESEND_TIMEOUT = 30;
 export default function OtpVerification() {
   const navigate = useNavigate();
   const { userId, type } = useParams();
-  const email = localStorage.getItem("UserMemail");
+  const email = localStorage.getItem("email");
   const inputRefs = useRef([]);
 
   const [code, setCode] = useState(Array(OTP_LENGTH).fill(""));

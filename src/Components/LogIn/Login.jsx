@@ -14,7 +14,7 @@ export default function Login() {
     const [isAdminLogin, setIsAdminLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // 🔁 Loading state
 
-    const { setIsLoggedIn, setUserImage, setUserData } = useAuth();
+    const { setIsLoggedIn, setUserImage, setUserData,setIsAdminLoggedIn } = useAuth();
 
     const { values, handleChange, handleSubmit, errors, touched, handleBlur } = useFormik({
         initialValues: { email: '', password: '' },
@@ -44,6 +44,7 @@ export default function Login() {
         localStorage.setItem("UserId", userid);
         localStorage.setItem("usertoken", usertoken);
 
+
         if (response.status === 200) {
             showSuccessToast('Successfully Logged In');
             setIsLoggedIn(true);
@@ -60,10 +61,13 @@ export default function Login() {
 
         localStorage.setItem("AdminId", adminid);
         localStorage.setItem("admintoken", admintoken);
+        localStorage.setItem("email", response.data.data.email);
 
         if (response.status === 200) {
             showSuccessToast('Admin Successfully Logged In');
             setIsLoggedIn(true);
+            setIsAdminLoggedIn(false);
+            
             navigate(`/OtpVerification/AdminVerify/${adminid}`);
         }
     };

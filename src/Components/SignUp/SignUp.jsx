@@ -33,8 +33,8 @@ export default function SignUp() {
                 }
 
                 const response = await axios.post(`${APIURL}CreateUser`, formData);
+                localStorage.setItem("email", response.data.email);
 
-                localStorage.setItem('UserMemail', response.data.email);
                 if (response.status === 200 || response.status === 201) {
                     showSuccessToast('Successfully Signed Up');
                     navigate(`/OtpVerification/UserOtp/${response.data.id}`);
