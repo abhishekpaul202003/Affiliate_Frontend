@@ -1,12 +1,16 @@
-import React from 'react'
-import SilidingBar from './SilidingBar'
+import React from 'react';
+import SilidingBar from './SilidingBar';
+import HomeCard from './HomeCard'
+
+
 
 export default function Home() {
+  
+
   return (
-    <div>
-      <SilidingBar/>
+    <div className="select-none">
+      <SilidingBar />
+      <HomeCard/>
     </div>
-  )
+  );
 }
-
-

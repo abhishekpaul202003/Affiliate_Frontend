@@ -5,6 +5,7 @@ import axios from "axios";
 import { showSuccessToast, showErrorToast } from "./ToastifyNotification";
 import { FiMail } from "react-icons/fi";
 import { PulseLoader } from "react-spinners";
+import { motion } from "framer-motion";
 
 const OTP_LENGTH = 4;
 const RESEND_TIMEOUT = 30;
@@ -23,15 +24,12 @@ export default function OtpVerification() {
   const handleChange = useCallback((element, index) => {
     const value = element.value;
     if (!/^\d?$/.test(value)) return;
-
-    setCode(prev => {
+    setCode((prev) => {
       const newCode = [...prev];
       newCode[index] = value;
-
       if (value && index < OTP_LENGTH - 1) {
         inputRefs.current[index + 1]?.focus();
       }
-
       return newCode;
     });
   }, []);
@@ -51,7 +49,6 @@ export default function OtpVerification() {
           : type === "NewEmail"
           ? "resendEmailVerification"
           : "resendAdminOtp";
-
       await axios.post(`${APIURL}${endpoint}/${userId}`);
       showSuccessToast("OTP resent successfully!");
       setTimeLeft(RESEND_TIMEOUT);
@@ -68,11 +65,9 @@ export default function OtpVerification() {
       setCanResend(true);
       return;
     }
-
     const timer = setTimeout(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
@@ -84,7 +79,6 @@ export default function OtpVerification() {
     async (e) => {
       e.preventDefault();
       setIsLoading(true);
-
       try {
         const userOtp = code.join("");
         if (!userOtp || userOtp.length !== OTP_LENGTH) {
@@ -112,7 +106,6 @@ export default function OtpVerification() {
 
         if (response.status === 200) {
           showSuccessToast(response.data?.msg || "Verification successful!");
-
           const redirectPath = type === "AdminVerify" ? "/adminhome" : "/login";
           navigate(redirectPath);
         }
@@ -126,27 +119,34 @@ export default function OtpVerification() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4 relative">
-      {/* Loading Overlay */}
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-900 flex items-center justify-center p-4 relative">
+      {/* Loading Spinner Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
-          <PulseLoader color="#ffffff" size={15} />
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+          <PulseLoader color="#fff" size={12} />
         </div>
       )}
 
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden z-10">
-        <div className="bg-blue-600 p-6 text-center">
+      <motion.div
+        className="w-full max-w-md bg-white rounded-2xl shadow-[0_0_20px_rgba(255,0,0,0.4)] border border-red-500 z-10 overflow-hidden"
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="bg-red-600 p-6 text-center">
           <div className="flex justify-center mb-4">
-            <div className="bg-white p-3 rounded-full">
-              <FiMail className="text-blue-600 text-2xl" />
+            <div className="bg-white p-3 rounded-full shadow-lg">
+              <FiMail className="text-red-600 text-2xl" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white select-none">Email Verification</h1>
+          <h1 className="text-2xl font-bold text-white uppercase tracking-wide select-none">
+            OTP Verification
+          </h1>
         </div>
 
         <div className="p-8">
-          <p className="text-gray-600 text-center mb-6 select-none">
-            We've sent a {OTP_LENGTH}-digit code to <span className="font-semibold">{email}</span>
+          <p className="text-gray-700 text-center mb-6 text-sm select-none">
+            Enter the {OTP_LENGTH}-digit code sent to <span className="font-bold text-red-600">{email}</span>
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -155,10 +155,9 @@ export default function OtpVerification() {
                 <input
                   key={index}
                   ref={(el) => (inputRefs.current[index] = el)}
-                  className="w-14 h-14 text-center text-2xl font-medium border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-14 h-14 text-center text-2xl font-bold text-red-600 border-2 border-red-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition"
                   type="text"
                   inputMode="numeric"
-                  pattern="[0-9]*"
                   maxLength="1"
                   value={digit}
                   onChange={(e) => handleChange(e.target, index)}
@@ -172,37 +171,37 @@ export default function OtpVerification() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
-                  <PulseLoader color="#ffffff" size={8} className="mr-2" />
+                  <PulseLoader color="#fff" size={8} />
                   Verifying...
                 </>
               ) : (
-                "Verify Account"
+                "Start the Engine"
               )}
             </button>
 
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-600">
               {canResend ? (
                 <button
                   type="button"
                   onClick={handleResendOTP}
                   disabled={isLoading}
-                  className="text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-red-600 hover:text-red-700 font-semibold disabled:opacity-50"
                 >
                   Resend Code
                 </button>
               ) : (
                 <p>
-                  Resend code in <span className="font-medium">{timeLeft}s</span>
+                  Resend in <span className="font-semibold text-red-500">{timeLeft}s</span>
                 </p>
               )}
             </div>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RxDashboard } from "react-icons/rx";
 import { LuUsersRound } from "react-icons/lu";
-import { FiImage } from "react-icons/fi";
+import { FiImage, FiLogOut } from "react-icons/fi";
 import { MdLiveTv } from "react-icons/md";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { SiMaxplanckgesellschaft } from "react-icons/si";
-import { FiLogOut } from "react-icons/fi"; 
-import { useAuth } from '../context/AuthConetxt'; // Fixed typo in import path
+import { useAuth } from '../context/AuthConetxt';
 import { useNavigate } from 'react-router-dom';
 
 import Dashboard from './Dashboard';
@@ -62,7 +61,7 @@ const AdminHome = () => {
   };
 
   const navItemVariants = {
-    hover: { scale: 1.05, backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+    hover: { scale: 1.05, backgroundColor: 'rgba(239, 68, 68, 0.2)' },
     tap: { scale: 0.98 }
   };
 
@@ -79,31 +78,33 @@ const AdminHome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       {/* Desktop View */}
       <div className='hidden md:block'>
         <div className='flex pt-18'>
           {/* Sidebar */}
           <motion.div
-            className='bg-gradient-to-b from-blue-900 to-blue-800 min-h-screen px-4 py-2 shadow-xl flex flex-col'
+            className='bg-gradient-to-b from-black via-gray-900 to-red-800 min-h-screen px-4 py-2 shadow-2xl flex flex-col border-r-4 border-red-500'
             initial="open"
             animate={isSidebarOpen ? "open" : "closed"}
             variants={sidebarVariants}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
+            {/* Racing stripe */}
+            <div className="h-2 bg-gradient-to-r from-red-500 via-yellow-400 to-red-500 rounded-full mb-4 animate-pulse" />
+
             <div className="flex justify-between items-center mb-6">
               <motion.h1 
-                className='text-3xl font-bold py-2 text-white'
+                className='text-2xl font-extrabold text-red-500 tracking-widest'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                {isSidebarOpen ? 'MediaHub Admin' : ''}
+                {isSidebarOpen ? '🏁 RACER HUB' : ''}
               </motion.h1>
               <button 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="text-white p-2 rounded-full hover:bg-blue-700"
-                style={{ pointerEvents: 'auto' }}
+                className="text-red-400 p-2 rounded-full hover:bg-red-700"
               >
                 {isSidebarOpen ? '◀' : '▶'}
               </button>
@@ -119,10 +120,10 @@ const AdminHome = () => {
                   variants={navItemVariants}
                 >
                   <button
-                    className={`w-full flex items-center gap-3 text-[15px] capitalize justify-start py-3 px-4 rounded-lg transition-all
+                    className={`w-full flex items-center gap-3 text-sm capitalize justify-start py-3 px-4 rounded-lg transition-all font-semibold
                     ${activeComponent === item.component ? 
-                      'bg-blue-600 text-white shadow-md' : 
-                      'text-blue-100 hover:text-white'}`}
+                      'bg-red-600 text-white shadow-md border-l-4 border-yellow-400' : 
+                      'text-gray-200 hover:text-white hover:bg-gray-800'}`}
                     onClick={() => setActiveComponent(item.component)}
                   >
                     <span className="text-xl">{item.icon}</span>
@@ -140,9 +141,8 @@ const AdminHome = () => {
               variants={navItemVariants}
             >
               <button
-                className={`w-full flex items-center gap-3 text-[15px] capitalize justify-start py-3 px-4 rounded-lg transition-all
-                text-blue-100 hover:text-white hover:bg-blue-700`}
-                onClick={AdminhandleLogout}  // Fixed function name here
+                className="w-full flex items-center gap-3 text-sm capitalize justify-start py-3 px-4 rounded-lg text-gray-200 hover:text-white hover:bg-red-700"
+                onClick={AdminhandleLogout}
               >
                 <span className="text-xl"><FiLogOut /></span>
                 {isSidebarOpen && <span>Log Out</span>}
@@ -175,8 +175,7 @@ const AdminHome = () => {
 
       {/* Mobile View */}
       <div className='md:hidden'>
-        {/* Mobile Content */}
-        <div className='p-4 bg-gray-50 min-h-screen pb-24'>
+        <div className='p-4 bg-gray-100 min-h-screen pb-24'>
           <AnimatePresence mode='wait'>
             <motion.div
               key={activeMobileComponent}
@@ -190,9 +189,9 @@ const AdminHome = () => {
           </AnimatePresence>
         </div>
 
-        {/* Bottom Navigation Bar */}
+        {/* Bottom Nav */}
         <motion.div 
-          className="fixed bottom-0 left-0 right-0 w-full flex justify-between bg-white pt-3 pb-3 border-t border-gray-200 shadow-lg z-50"
+          className="fixed bottom-0 left-0 right-0 w-full flex justify-between bg-black pt-3 pb-3 border-t-2 border-red-600 shadow-xl z-50"
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -202,8 +201,8 @@ const AdminHome = () => {
               key={key}
               className={`flex flex-col items-center gap-1 p-2 rounded-lg cursor-pointer transition-all
               ${activeMobileComponent === component ? 
-                'text-blue-600' : 
-                'text-gray-500 hover:text-blue-500'}`}
+                'text-red-500' : 
+                'text-gray-400 hover:text-red-400'}`}
               onClick={() => setActiveMobileComponent(component)}
               whileHover="hover"
               whileTap="tap"

@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import {
-  Navbar, Home, About, Contact, Featured, Service, SignUp, Login, AdminHome,
-  OtpVerification, ForgotPassword, PageNotFound, Footer, UserProfile, Setting
+  Navbar, Home, About, Contact, Featured, Service, SignUp, Login, AdminHome, ViewCar,
+  OtpVerification, ForgotPassword, PageNotFound, Footer, UserProfile, Setting, CarCateGory
 } from './AllComponets';
-import { AuthProvider, useAuth } from './Components/context/AuthConetxt'; // adjust the path as needed
+import { AuthProvider, useAuth } from './Components/context/AuthConetxt'; 
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -32,6 +32,10 @@ const AppRoutes = () => {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/carcategory/:Category' element={<CarCateGory />} />
+        <Route path='/viewcar/:id' element={<ViewCar />} />
+
+
         <Route path='/otpverification/:type/:userId' element={<OtpVerification />} />
 
         {/* Protected Routes */}

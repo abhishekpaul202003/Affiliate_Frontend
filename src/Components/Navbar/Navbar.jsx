@@ -19,7 +19,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="flex fixed w-full justify-between items-center h-16 bg-black text-white px-6 md:px-20 z-50 shadow-lg shadow-red-800">
+    <nav className="flex select-none fixed w-full justify-between items-center h-16 bg-black text-white px-6 md:px-20 z-50 shadow-lg shadow-red-800">
       <h1 className="text-3xl font-bold text-red-500 tracking-wide racing-font">
         <Link to='/'>RACE-X</Link>
       </h1>
