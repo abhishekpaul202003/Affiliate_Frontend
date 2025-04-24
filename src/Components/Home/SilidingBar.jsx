@@ -15,7 +15,7 @@ export default function SilidingBar() {
   ];
 
   return (
-    <div className="pt-20 w-screen h-[60vh] px-4 md:px-0">
+    <div className="pt-20 w-screen h-[60vh] bg-black text-white bg-gradient-to-b from-black via-gray-900 to-black select-none">
       <div className="max-w-7xl mx-auto rounded-3xl border-4 border-red-600 shadow-2xl overflow-hidden relative">
         <Carousel
           showThumbs={false}
@@ -26,13 +26,14 @@ export default function SilidingBar() {
           showArrows={false}
         >
           {imagesSliding.map((item, index) => (
-            <div key={index} className="w-full h-[60vh]">
+            <div key={index} className="w-full h-[60vh] relative">
               <img
                 className="w-full h-full object-cover"
                 src={item.img}
                 alt={`Slide ${index + 1}`}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+              {/* Matching Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/60 z-10" />
             </div>
           ))}
         </Carousel>
