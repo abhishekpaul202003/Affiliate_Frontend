@@ -67,7 +67,7 @@ export default function Card() {
             >
               <Link to={`/carcategory/${brandName}`}>
                 {/* Background glow */}
-                <div className="absolute inset-0 bg-red-500 opacity-10 group-hover:opacity-30 transition duration-300 blur-md z-0" />
+                {/* <div className="absolute inset-0 bg-red-500 opacity-10 group-hover:opacity-30 transition duration-300 blur-md z-0" /> */}
 
                 {/* Car Image */}
                 <img
@@ -85,7 +85,7 @@ export default function Card() {
                 </div>
 
                 {/* Border glow hover */}
-                <div className="absolute inset-0 rounded-3xl border-4 border-transparent group-hover:border-red-500 transition duration-500 ease-in-out"></div>
+                {/* <div className="absolute inset-0 rounded-3xl border-4 border-transparent group-hover:border-red-500 transition duration-500 ease-in-out"></div> */}
               </Link>
             </motion.div>
           ))}

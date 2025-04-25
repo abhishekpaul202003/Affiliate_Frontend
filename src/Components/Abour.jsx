@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function Abour() {
+export default function CarsBrands() {
   return (
-    <div>Abour</div>
+    <div>CarsBrands</div>
   )
 }

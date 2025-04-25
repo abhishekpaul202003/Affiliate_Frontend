@@ -5,14 +5,14 @@ import { Link } from 'react-router-dom';
 import Search from './Search';
 import DropDownMenu from './DropDownMenu';
 import { useAuth } from '../context/AuthConetxt';
+import CarsBrands from '../CarsBrands';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [brandsOpen, setBrandsOpen] = useState(false);
   const { isLoggedIn, isAdminLoggedIn } = useAuth();
 
   const MENUDATA = [
-    { name: 'Home', href: '/' },
-    { name: 'About Us', href: '/about' },
     { name: 'Services', href: '/service' },
     { name: 'Featured', href: '/featured' },
     { name: 'Contact Me', href: '/contact' },
@@ -26,10 +26,25 @@ export default function Navbar() {
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-8">
-        <ul className="flex gap-6 font-medium text-white">
+        <ul className="flex gap-6 font-medium text-white items-center relative">
+          <li
+            className="relative"
+            onMouseEnter={() => setBrandsOpen(true)}
+            onMouseLeave={() => setBrandsOpen(false)}
+          >
+            <span className="cursor-pointer hover:text-red-500 transition">Brands</span>
+            {brandsOpen && (
+              <div className="absolute top-8 left-0 bg-white text-black rounded shadow-lg w-64 z-50">
+                <CarsBrands />
+              </div>
+            )}
+          </li>
+
           {MENUDATA.map((item, index) => (
             <li key={index}>
-              <Link to={item.href} className="hover:text-red-500 transition duration-200">{item.name}</Link>
+              <Link to={item.href} className="hover:text-red-500 transition duration-200">
+                {item.name}
+              </Link>
             </li>
           ))}
         </ul>
@@ -57,6 +72,14 @@ export default function Navbar() {
       {menuOpen && (
         <div className="absolute top-16 left-0 w-full bg-black text-white z-40">
           <ul className="flex flex-col text-center py-4 space-y-4">
+            <li>
+              <details className="cursor-pointer">
+                <summary className="hover:text-red-500 text-lg">Brands</summary>
+                <div className="bg-white text-black mt-2 mx-4 rounded-lg shadow-lg p-2">
+                  <CarsBrands />
+                </div>
+              </details>
+            </li>
             {MENUDATA.map((item, index) => (
               <li key={index}>
                 <Link to={item.href} onClick={() => setMenuOpen(false)} className="hover:text-red-500 text-lg transition">

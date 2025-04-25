@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import img1 from "../../assets/images/lam1.webp";
+import img1 from "../../assets/img/l1.jpg";
 import img2 from "../../assets/images/lam2.avif";
 import img3 from "../../assets/images/lam3.avif";
 import img4 from "../../assets/images/lam4.jpg";

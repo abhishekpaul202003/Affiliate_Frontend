@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import {
-  Navbar, Home, About, Contact, Featured, Service, SignUp, Login, AdminHome, ViewCar,
-  OtpVerification, ForgotPassword, PageNotFound, Footer, UserProfile, Setting, CarCateGory
+  Navbar, Home, Contact, Featured, Service, SignUp, Login, AdminHome, ViewCar, CarsBrands, 
+  OtpVerification, ForgotPassword, Footer, UserProfile, Setting, CarCateGory,PageNotFound
 } from './AllComponets';
 import { AuthProvider, useAuth } from './Components/context/AuthConetxt'; 
 
@@ -25,7 +25,7 @@ const AppRoutes = () => {
       <Routes>
         {/* Public Routes */}
         <Route path='/' element={<Home />} />
-        <Route path='/about' element={<About />} />
+        <Route path='/carsbrands' element={<CarsBrands />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/featured' element={<Featured />} />
         <Route path='/service' element={<Service />} />

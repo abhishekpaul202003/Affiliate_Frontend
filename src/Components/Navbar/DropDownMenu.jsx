@@ -1,64 +1,92 @@
-// Updated DropDownMenu.jsx
-import React from 'react';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthConetxt';
+import { FaCar } from 'react-icons/fa';
+import { SiBmw, SiFerrari, SiAudi, SiMercedes, SiPorsche, SiTesla, SiLamborghini, SiVolkswagen, SiFord, SiMclaren, SiBugatti, SiAstonmartin } from 'react-icons/si';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 
-export default function DropDownMenu() {
-  const { setIsLoggedIn, setUserImage, UserImage } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    setUserImage(null);
-    setIsLoggedIn(false);
-    navigate('/');
-  };
-
-  const UserIMG = UserImage;
-
-  const DROPDOWNMENUDATA = [
-    { name: 'Your Profile', href: '/UserProfile', icon: <FaUser className="mr-2" /> },
-    { name: 'Settings', href: '/setting', icon: <FaCog className="mr-2" /> },
-    { name: 'Logout', onClick: handleLogout, icon: <FaSignOutAlt className="mr-2" /> },
+export default function CarsBrands() {
+  const carsData = [
+    { BrandIcon: <SiBmw className="text-blue-600" />, name: 'BMW' },
+    { BrandIcon: <SiFerrari className="text-red-600" />, name: 'Ferrari' },
+    { BrandIcon: <SiMclaren className="text-orange-600" />, name: 'McLaren' },
+    { BrandIcon: <SiLamborghini className="text-yellow-500" />, name: 'Lamborghini' },
+    { BrandIcon: <SiPorsche className="text-red-700" />, name: 'Porsche' },
+    { BrandIcon: <SiBugatti className="text-blue-900" />, name: 'Bugatti' },
+    { BrandIcon: <SiAstonmartin className="text-green-800" />, name: 'Aston Martin' },
+    { BrandIcon: <SiAudi className="text-red-500" />, name: 'Audi' },
+    { BrandIcon: <SiMercedes className="text-gray-800" />, name: 'Mercedes-Benz' },
+    { BrandIcon: <SiTesla className="text-red-500" />, name: 'Tesla' },
+    { BrandIcon: <SiVolkswagen className="text-blue-800" />, name: 'Volkswagen' },
+    { BrandIcon: <SiFord className="text-blue-600" />, name: 'Ford' },
+    { BrandIcon: <FaCar className="text-gray-600" />, name: 'Other Brands' },
   ];
 
   return (
-    <div className="absolute select-none inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-      <Menu as="div" className="relative ml-3">
-        <div>
-          <MenuButton className="flex rounded-full bg-gradient-to-r from-red-700 to-black p-1 ring-2 ring-yellow-400">
-            <span className="sr-only">Open user menu</span>
-            {UserIMG ? (
-              <img className="h-10 w-10 rounded-full border-2 border-yellow-400" src={UserIMG} alt="User Profile" />
-            ) : (
-              <FaUser className="h-8 w-8 text-yellow-400 p-1 bg-black rounded-full" />
-            )}
-          </MenuButton>
-        </div>
-        <MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-black text-white shadow-lg ring-1 ring-red-600 focus:outline-none">
-          {DROPDOWNMENUDATA.map(({ name, href, onClick, icon }) => (
-            <MenuItem key={name}>
-              {({ active }) => (
-                onClick ? (
-                  <button
-                    onClick={onClick}
-                    className={`flex w-full items-center px-4 py-2 text-sm ${active ? 'bg-red-700' : ''}`}
-                  >
-                    {icon}
-                    {name}
-                  </button>
-                ) : (
-                  <Link to={href} className={`flex items-center px-4 py-2 text-sm ${active ? 'bg-red-700' : ''}`}>
-                    {icon}
-                    {name}
-                  </Link>
-                )
-              )}
-            </MenuItem>
-          ))}
-        </MenuItems>
-      </Menu>
+    <div className="bg-gray-900 rounded-lg p-4 shadow-xl">
+      <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+        <FaCar className="text-red-500" />
+        <span>Supercar & Luxury Brands</span>
+      </h2>
+      <div className="flex flex-col gap-4">
+        {carsData.map((car, index) => (
+          <Menu key={index} as="div" className="relative">
+            <Menu.Button className="w-full flex items-center gap-4 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer no-underline group">
+              <span className="text-3xl group-hover:scale-110 transition-transform">
+                {car.BrandIcon}
+              </span>
+              <span className="text-sm font-medium text-white flex-grow">{car.name}</span>
+              <span className="text-xs text-gray-400">View details →</span>
+            </Menu.Button>
+            
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-700 rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                <div className="px-1 py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`${
+                          active ? 'bg-gray-700 text-white' : 'text-gray-200'
+                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      >
+                        View Details
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`${
+                          active ? 'bg-gray-700 text-white' : 'text-gray-200'
+                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      >
+                        Compare Models
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`${
+                          active ? 'bg-gray-700 text-white' : 'text-gray-200'
+                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      >
+                        Find Dealers
+                      </button>
+                    )}
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+        ))}
+      </div>
     </div>
   );
 }
